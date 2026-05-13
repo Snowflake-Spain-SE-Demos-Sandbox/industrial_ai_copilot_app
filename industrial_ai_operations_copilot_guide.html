@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Industrial AI Operations Copilot - Cortex Code Guide</title>
+<style>
+:root {
+  --sf-blue: #29B5E8;
+  --sf-dark: #0D3B66;
+  --sf-navy: #11567F;
+  --sf-light: #F4FAFE;
+  --sf-white: #FFFFFF;
+  --sf-gray: #6E7681;
+  --sf-green: #28A745;
+  --sf-orange: #FD7E14;
+  --sf-red: #DC3545;
+  --sf-purple: #7B2D8E;
+  --radius: 12px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; color: #1a1a2e; line-height: 1.65; background: #f8fafc; }
+.hero { background: linear-gradient(135deg, var(--sf-dark) 0%, var(--sf-navy) 60%, var(--sf-blue) 100%); color: white; padding: 60px 40px; text-align: center; }
+.hero h1 { font-size: 2.6rem; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.02em; color: #FFFFFF; }
+.hero p { font-size: 1.15rem; opacity: 0.9; max-width: 700px; margin: 0 auto; color: #FFFFFF; }
+.hero .badge { display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 6px 18px; border-radius: 20px; font-size: 0.85rem; margin-top: 18px; color: #FFFFFF; }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+section { padding: 50px 0; }
+h2 { font-size: 1.8rem; color: var(--sf-dark); margin-bottom: 24px; font-weight: 700; border-bottom: 3px solid var(--sf-blue); padding-bottom: 8px; display: inline-block; }
+h3 { font-size: 1.25rem; color: var(--sf-navy); margin: 24px 0 12px; font-weight: 600; }
+p, li { font-size: 0.98rem; color: #333; }
+ul { padding-left: 20px; }
+li { margin-bottom: 6px; }
+
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 24px 0; }
+.card { background: white; border-radius: var(--radius); padding: 24px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: transform 0.2s, box-shadow 0.2s; }
+.card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
+.card h4 { font-size: 1.05rem; color: var(--sf-navy); margin-bottom: 8px; }
+.card p { font-size: 0.9rem; color: var(--sf-gray); }
+.card .tag { display: inline-block; background: var(--sf-light); color: var(--sf-navy); padding: 3px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; margin-top: 10px; }
+
+.prompt-block { background: white; border-left: 4px solid var(--sf-blue); border-radius: 0 var(--radius) var(--radius) 0; padding: 20px 24px; margin: 20px 0; box-shadow: 0 1px 6px rgba(0,0,0,0.05); }
+.prompt-block .step-num { display: inline-block; background: var(--sf-blue); color: white; width: 32px; height: 32px; line-height: 32px; text-align: center; border-radius: 50%; font-weight: 700; font-size: 0.9rem; margin-right: 10px; }
+.prompt-block .prompt-title { font-weight: 700; color: var(--sf-dark); font-size: 1.05rem; }
+.prompt-block .prompt-text { background: #f1f5f9; border-radius: 8px; padding: 14px 18px; margin: 12px 0; font-family: 'SF Mono', 'Monaco', 'Menlo', monospace; font-size: 0.88rem; color: #1e293b; border: 1px solid #e2e8f0; white-space: pre-wrap; position: relative; }
+.copy-btn { position: absolute; top: 4px; right: 4px; background: var(--sf-blue); color: white; border: none; border-radius: 4px; padding: 2px 7px; font-size: 0.65rem; font-weight: 600; cursor: pointer; opacity: 0.5; transition: opacity 0.2s; line-height: 1.4; }
+.copy-btn:hover { opacity: 1; }
+.copy-btn.copied { background: var(--sf-green); }
+.prompt-block .result { background: linear-gradient(135deg, #f0f7ff, #e6f2ff); border: 1px solid #b8d8f8; border-radius: 8px; padding: 14px 18px; margin-top: 10px; font-size: 0.88rem; }
+.prompt-block .result strong { color: var(--sf-navy); }
+
+.arch-diagram { background: white; border-radius: var(--radius); padding: 30px; border: 1px solid #e2e8f0; margin: 24px 0; overflow-x: auto; }
+.arch-row { display: flex; gap: 12px; margin: 10px 0; align-items: stretch; flex-wrap: wrap; }
+.arch-box { border-radius: 8px; padding: 12px 16px; font-size: 0.82rem; text-align: center; min-width: 120px; flex: 1; }
+.arch-box.db { background: var(--sf-dark); color: white; font-weight: 700; }
+.arch-box.schema { background: var(--sf-navy); color: white; }
+.arch-box.table { background: #e3f2fd; color: #0d47a1; border: 1px solid #bbdefb; }
+.arch-box.view { background: #f3e5f5; color: #6a1b9a; border: 1px solid #ce93d8; }
+.arch-box.udf { background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; }
+.arch-box.search { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; }
+.arch-box.app { background: linear-gradient(135deg, var(--sf-blue), #1a8bb5); color: white; font-weight: 700; }
+.arch-label { font-size: 0.72rem; color: var(--sf-gray); text-align: center; margin: 4px 0; }
+.arch-arrow { text-align: center; font-size: 1.2rem; color: var(--sf-blue); margin: 4px 0; }
+
+.metric-row { display: flex; gap: 16px; margin: 24px 0; flex-wrap: wrap; }
+.metric { background: white; border-radius: var(--radius); padding: 20px; text-align: center; flex: 1; min-width: 150px; border: 1px solid #e2e8f0; }
+.metric .value { font-size: 2rem; font-weight: 800; color: var(--sf-dark); }
+.metric .label { font-size: 0.82rem; color: var(--sf-gray); margin-top: 4px; }
+
+.timeline { border-left: 3px solid var(--sf-blue); margin: 20px 0 20px 16px; padding-left: 24px; }
+.timeline .t-item { margin-bottom: 20px; position: relative; }
+.timeline .t-item::before { content: ''; position: absolute; left: -31px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--sf-blue); }
+.timeline .t-time { font-size: 0.78rem; color: var(--sf-blue); font-weight: 600; }
+.timeline .t-text { font-size: 0.92rem; color: #333; }
+
+.conclusion-box { background: linear-gradient(135deg, var(--sf-dark), var(--sf-navy)); color: white; border-radius: var(--radius); padding: 30px; margin: 24px 0; }
+.conclusion-box h3 { color: var(--sf-blue); }
+.conclusion-box p, .conclusion-box li { color: rgba(255,255,255,0.9); }
+
+footer { background: var(--sf-dark); color: rgba(255,255,255,0.7); padding: 30px; text-align: center; font-size: 0.85rem; }
+footer p { color: rgba(255,255,255,0.7); }
+footer a { color: var(--sf-blue); }
+
+.img-container { position: relative; display: inline-block; width: 100%; }
+.img-container img { width: 100%; max-width: 1400px; height: auto; display: block; margin: 0 auto; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); cursor: zoom-in; transition: transform 0.2s; }
+.img-container:hover img { transform: scale(1.01); }
+.zoom-btn { position: absolute; top: 16px; right: 16px; background: rgba(41,181,232,0.9); color: white; border: none; border-radius: 50%; width: 44px; height: 44px; font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.25); transition: background 0.2s, transform 0.2s; z-index: 10; }
+.zoom-btn:hover { background: #11567F; transform: scale(1.1); }
+.lightbox-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.92); z-index: 9999; justify-content: center; align-items: center; animation: fadeIn 0.25s ease; }
+.lightbox-overlay.active { display: flex; }
+.lightbox-overlay img { max-width: 94vw; max-height: 90vh; border-radius: 12px; box-shadow: 0 0 40px rgba(41,181,232,0.3); }
+.lightbox-close { position: fixed; top: 20px; right: 28px; background: rgba(255,255,255,0.15); color: white; border: 2px solid rgba(255,255,255,0.4); border-radius: 50%; width: 48px; height: 48px; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10000; transition: background 0.2s, transform 0.2s; }
+.lightbox-close:hover { background: #DC3545; border-color: #DC3545; transform: scale(1.1); }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+</style>
+</head>
+<body>
+
+<div class="hero" style="position:relative;">
+  <div style="position:absolute;top:20px;left:24px;">
+    <svg width="500" height="140" viewBox="0 0 360 120" xmlns="http://www.w3.org/2000/svg">
+      <g transform="translate(10,25)" fill="#FFFFFF">
+        <rect x="0" y="40" width="70" height="40" rx="6"/>
+        <polygon points="0,40 18,22 18,40"/>
+        <polygon points="18,40 36,22 36,40"/>
+        <polygon points="36,40 54,22 54,40"/>
+        <polygon points="54,40 70,22 70,40"/>
+        <rect x="55" y="5" width="10" height="25" rx="2"/>
+        <circle cx="20" cy="55" r="4" fill="#38BDF8"/>
+        <circle cx="35" cy="55" r="4" fill="#38BDF8"/>
+        <circle cx="50" cy="55" r="4" fill="#38BDF8"/>
+      </g>
+      <text x="110" y="55" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#FFFFFF">Industrial AI</text>
+      <text x="110" y="85" font-family="Arial, sans-serif" font-size="18" fill="#E0F2FE">Operations Copilot</text>
+    </svg>
+  </div>
+  <p style="font-size:0.9rem; opacity:0.7; margin-bottom:8px;">Snowflake Cortex Code</p>
+
+  <p>How a business analyst built a complete industrial operations platform with AI, without writing a single line of code, using only natural language in Cortex Code.</p>
+  <div class="badge">Step-by-step guide &middot; 14 prompts &middot; 8 application pages &middot; 30+ Snowflake objects</div>
+  <a href="industrial_ai_copilot_app_guide_en.html" style="display:inline-block; margin-top:16px; background:#29B5E8; border:2px solid #FFFFFF; color:white; padding:10px 28px; border-radius:8px; text-decoration:none; font-weight:600; font-size:0.95rem; transition:background 0.2s;">&#128248; Real result: the application built for the business, inside Snowflake's security perimeter &rarr;</a>
+</div>
+
+<div class="container">
+
+<!-- SECTION 1: Business Context -->
+<section id="business">
+<h2>1. Business Context</h2>
+<div class="img-container" data-img="caso_en.png">
+  <img src="caso_en.png" alt="Business use case infographic for the Industrial AI Operations Copilot on Snowflake">
+  <button class="zoom-btn" title="Zoom in">&#128269;</button>
+</div>
+<p style="text-align:center;color:#888;font-size:0.82rem;margin-bottom:24px;">Click the magnifier or the image to zoom in.</p>
+<p>A chemical company with 3 production plants (Valencia, Tarragona, Bilbao) needs a tool that unifies its operations: production, maintenance, alerts, vehicle fleet, and technical support. The goal is to help plant managers, reliability engineers, and maintenance technicians make better decisions, faster, with the help of artificial intelligence.</p>
+
+<h3>The Real Problem</h3>
+<ul>
+  <li>Equipment, sensor, alert, and maintenance information is scattered across different systems</li>
+  <li>When an alert fires, the technician spends hours searching for the right manual, reviewing the history, and deciding what to do</li>
+  <li>Production rescheduling decisions are made by phone, without real-time data</li>
+  <li>Predictive maintenance exists as a concept but doesn't translate into concrete actions</li>
+</ul>
+
+<h3>What We Built</h3>
+<p>A complete application with 8 pages, realistic synthetic data of 2.8M+ sensor readings across 446 equipment and 1,470 sensors, integrated AI functions, semantic search over technical manuals, and a natural language chat that answers operational questions with real data.</p>
+
+<div class="card-grid">
+  <div class="card" style="border-top:4px solid #11567F;">
+    <div style="font-size:2rem;margin-bottom:8px;">&#127981;</div>
+    <h4>Operations Center</h4>
+    <p>Executive plant view: performance, quality rate, unplanned downtime, safety incidents. A button generates an AI-powered executive summary.</p>
+    <div class="tag" style="background:#e8f1fb;color:#11567F;">Benefit: Informed decision in 10 seconds</div>
+  </div>
+  <div class="card" style="border-top:4px solid #29B5E8;">
+    <div style="font-size:2rem;margin-bottom:8px;">&#9881;</div>
+    <h4>Production Plant</h4>
+    <p>Visual plant map with building, zone, and equipment card selectors. Selecting an equipment shows sensors, open alerts, last maintenance, and the relevant technical manual.</p>
+    <div class="tag" style="background:#e0f7fa;color:#00838F;">Benefit: Eliminates physical walkthrough for diagnosis</div>
+  </div>
+  <div class="card" style="border-top:4px solid #DC3545;">
+    <div style="font-size:2rem;margin-bottom:8px;">&#9888;</div>
+    <h4>Alerts &amp; Smart Actions</h4>
+    <p>Kanban board with columns: At Risk, Pending Action, Rejected, Resolved Today. AI analyzes root cause, retrieves evidence from manuals and historical tickets using Cortex Search, and recommends approval, rejection, or escalation.</p>
+    <div class="tag" style="background:#fce4ec;color:#b71c1c;">Benefit: Alert triage 5x faster</div>
+  </div>
+  <div class="card" style="border-top:4px solid #FD7E14;">
+    <div style="font-size:2rem;margin-bottom:8px;">&#128196;</div>
+    <h4>Ticket Assistant</h4>
+    <p>Technical ticket panel with AI diagnosis: problem summary, probable cause, repair steps, required parts, and similar historical solutions retrieved via semantic search.</p>
+    <div class="tag" style="background:#fff3e0;color:#e65100;">Benefit: 40% faster ticket resolution</div>
+  </div>
+  <div class="card" style="border-top:4px solid #7B2D8E;">
+    <div style="font-size:2rem;margin-bottom:8px;">&#128197;</div>
+    <h4>Production Planner</h4>
+    <p>Order management with priorities, materials, and assigned lines. AI generates rescheduling proposals when an unplanned stoppage occurs, reassigning orders to alternative lines.</p>
+    <div class="tag" style="background:#f3e5f5;color:#6a1b9a;">Benefit: Rescheduling in minutes, not hours</div>
+  </div>
+  <div class="card" style="border-top:4px solid #28A745;">
+    <div style="font-size:2rem;margin-bottom:8px;">&#128200;</div>
+    <h4>Predictive Maintenance</h4>
+    <p>Equipment ranking by composite risk (ML + sensor anomalies + overdue maintenance). Sensor trend charts, spare parts availability, and AI recommendation with work plan.</p>
+    <div class="tag" style="background:#e8f5e9;color:#1b5e20;">Benefit: Reduced unplanned downtime</div>
+  </div>
+  <div class="card" style="border-top:4px solid #0288D1;">
+    <div style="font-size:2rem;margin-bottom:8px;">&#128666;</div>
+    <h4>Fleet Maintenance Copilot</h4>
+    <p>Receives operator vehicle complaints. AI extracts model and symptom, searches manuals, checks maintenance history, proposes repair, and generates a response for the operator.</p>
+    <div class="tag" style="background:#e1f5fe;color:#01579b;">Benefit: Professional and immediate operator support</div>
+  </div>
+  <div class="card" style="border-top:4px solid #FF6F00;">
+    <div style="font-size:2rem;margin-bottom:8px;">&#129302;</div>
+    <h4>Ask AI</h4>
+    <p>Free-form chat that answers operational questions using real Snowflake data. Classifies intent, executes the correct SQL query, searches documents, and presents evidence.</p>
+    <div class="tag" style="background:#fff8e1;color:#e65100;">Benefit: Any question, answer backed by data</div>
+  </div>
+</div>
+</section>
+
+<!-- SECTION 2: Before You Start -->
+<section id="setup">
+<h2>2. Before You Start (Snowflake Setup)</h2>
+<p>Before executing the prompts below, you need a properly configured Snowflake environment. The build manual covers everything you need: account requirements, warehouse setup, role permissions, Cortex AI enablement, and container runtime configuration.</p>
+<div class="card" style="border-left:4px solid var(--sf-blue); margin:24px 0; max-width:700px;">
+  <h4 style="margin-bottom:8px;">&#128214; Build Manual</h4>
+  <p style="margin-bottom:12px;">Step-by-step instructions to prepare your Snowflake environment before running the prompts.</p>
+  <a href="manual_en.html" style="display:inline-block; background:var(--sf-blue); color:white; padding:10px 24px; border-radius:8px; text-decoration:none; font-weight:600; font-size:0.92rem; transition:background 0.2s;">Open Build Manual &rarr;</a>
+</div>
+
+<div style="background:#FFF8E1; border:2px solid #FD7E14; border-radius:var(--radius); padding:20px 24px; margin:24px 0; max-width:700px;">
+  <h4 style="color:#E65100; margin-bottom:8px;">&#9888;&#65039; IMPORTANT: Install the /best-practices skill</h4>
+  <p style="font-size:0.94rem; color:#333;">Every prompt in this guide starts with <code style="background:#fff3e0; padding:2px 8px; border-radius:4px; font-weight:600; color:#E65100;">/best-practices</code>. This is a custom Cortex Code skill that ensures the generated code follows Snowflake Workspace conventions (container runtime, CSP restrictions, theme compatibility, caching patterns, etc.).</p>
+  <p style="font-size:0.94rem; color:#333; margin-top:10px;"><strong>You must download and install it before running any prompt.</strong> The Build Manual includes the download link and installation steps. Without this skill, prompts may generate code that fails to deploy correctly.</p>
+</div>
+</section>
+
+<!-- SECTION 3: Step-by-step prompts -->
+<section id="prompts">
+<h2>3. The Prompts: How We Built It</h2>
+<p>Each step is executed with a natural language prompt inside Cortex Code. No code is written manually. Below is each actual prompt and what it generates in Snowflake.</p>
+
+<div class="prompt-block">
+  <span class="step-num">1</span>
+  <span class="prompt-title">Create the database, structure, and synthetic data</span>
+  <div class="prompt-text">/best-practices Create a demo in Snowflake called INDUSTRIAL_AI_OPERATIONS_COPILOT.
+
+I need a database, schemas, and a demo warehouse. 3 plants: A24, B17, C09. 4 buildings per plant. Production zones: Polymerization, Pelletizing, Packaging, Coating, Compression, Purification. Industrial equipment: pumps, reactors, compressors, tanks, conveyor belts, coolers. Sensors for temperature, vibration, pressure, flow, and energy.
+
+Synthetic tables for plants, buildings, production zones, production lines, equipment, sensors, sensor readings, alerts, work orders, tickets, manuals, production orders, inventory, maintenance history, fleet vehicles, and customer requests.
+
+Time series spanning at least 90 days. Anomaly, degradation, and imminent failure events. Include data patterns that enable alerts for high temperature, performance drop, pump failure risk, inventory shortage, and production rescheduling.
+
+Relationships between objects like Plant > Building > Zone > Equipment > Sensor > Alert > Work Order. Analytical views for operational KPIs.</div>
+  <div class="result">
+    <strong>Generated in Snowflake:</strong> 1 database (INDUSTRIAL_AI_OPERATIONS_COPILOT), 1 warehouse, 2 schemas (RAW_DATA, ANALYTICS), 16 tables with 2.8M+ synthetic records with embedded real patterns, 8 analytical views. 2,831,760 sensor readings (90-day hourly time series with Normal/Anomaly/Degradation/Failure events) across 1,470 sensors and 446 equipment. 966 alerts with 10 types. 150 tickets, 452 work orders, 72 production orders with rescheduling. 36 inventory items, 2,230 maintenance history records. 14 fleet vehicles, 48 customer requests.
+  </div>
+</div>
+
+<div class="prompt-block">
+  <span class="step-num">2</span>
+  <span class="prompt-title">Configure semantic search with Cortex Search</span>
+  <div class="prompt-text">/best-practices Configure Cortex Search for technical documents and historical tickets. Create a DEMO_MANUAL_CHUNKS table with synthetic technical documents. A DEMO_TICKET_KNOWLEDGE_BASE table with historical tickets, comments, and resolutions. A Cortex Search service over both content sources.</div>
+  <div class="result">
+    <strong>Generated:</strong> 1 Cortex Search service (INDUSTRIAL_OPS_SEARCH) with snowflake-arctic-embed-m-v1.5 model, 35 indexed documents (20 technical manual chunks + 15 historical ticket records) via unified SEARCH_CONTENT view. Functional semantic search with filters by SOURCE_TYPE, EQUIPMENT_TYPE, CONTENT_CATEGORY, TITLE, and SECTION.
+  </div>
+</div>
+
+<div class="prompt-block">
+  <span class="step-num">3</span>
+  <span class="prompt-title">Create AI functions with Cortex</span>
+  <div class="prompt-text">/best-practices Create SQL functions that use Snowflake Cortex AI to: summarize a technical ticket, classify alert severity, extract equipment, zone, symptom, and probable cause from free text, generate a troubleshooting recommendation, generate an explanation of why an alert should be approved, rejected, or escalated, and generate a production rescheduling proposal.</div>
+  <div class="result">
+    <strong>Generated:</strong> 6 SQL functions (UDFs) using SNOWFLAKE.CORTEX.COMPLETE (and AI_CLASSIFY / AI_EXTRACT) with mistral-large2 model and structured prompts returning JSON: FN_SUMMARIZE_TICKET, FN_CLASSIFY_ALERT_SEVERITY (AI_CLASSIFY), FN_EXTRACT_INCIDENT_ENTITIES (AI_EXTRACT), FN_TROUBLESHOOTING_RECOMMENDATION, FN_ALERT_DISPOSITION, FN_PRODUCTION_RESCHEDULE_PROPOSAL.
+  </div>
+</div>
+
+<div class="prompt-block">
+  <span class="step-num">4</span>
+  <span class="prompt-title">Create the Streamlit application structure and deploy to containers</span>
+  <div class="prompt-text">/best-practices Create a Streamlit application in Snowflake Workspace.
+
+The application should have sidebar navigation with these pages: Operations Center, Production Plant, Alerts and Smart Actions, Ticket Assistant, Production Planner, Predictive Maintenance, Fleet Maintenance Copilot, Ask AI.
+
+Prepare only the structure and navigation, because the following prompts will implement each page in detail. Use metrics, tables, charts, and visual cards.</div>
+  <div class="result">
+    <strong>Generated:</strong> Streamlit application structure (streamlit_app.py) with 8 navigation pages via st.navigation/st.Page, custom industrial CSS with Snowflake brand palette and connection to all tables. Deployed in Snowpark Container Services with pyproject.toml for PyPI dependencies and external access integration enabled. Includes utils/data.py helper module with run_query, run_query_no_cache, and formatting utilities. Complies with all CSP limitations and Streamlit in Snowflake configuration. Pages are implemented in prompts 5 through 12.
+  </div>
+</div>
+
+<div class="prompt-block">
+  <span class="step-num">5</span>
+  <span class="prompt-title">Implement Operations Center</span>
+  <div class="prompt-text">/best-practices Implement the Operations Center page. It should show a selectable plant, KPIs for performance, quality rate, work in progress, safety incidents, power consumption, downtime. A performance chart by process. A forecast vs. actual table. An unplanned downtime top bar. A button "Ask AI about this plant" that generates an executive summary.</div>
+  <div class="result">
+    <strong>Generated:</strong> Full page with plant selector (All / A24 / B17 / C09), unplanned downtime alert bar, 6 KPIs (throughput, yield, WIP, safety incidents, avg energy, downtime hours), throughput-by-zone bar chart, forecast vs actual table with fulfillment progress column, and @st.fragment AI executive summary button that calls Cortex Complete with real KPI data.
+  </div>
+</div>
+
+<div class="prompt-block">
+  <span class="step-num">6</span>
+  <span class="prompt-title">Implement Production Plant</span>
+  <div class="prompt-text">/best-practices Implement the Production Plant page. Simulate a plant view with building selector, zone selector, simple map with cards to represent equipment. When selecting an equipment, show type, manufacturer, installation date, last maintenance, associated sensors, open alerts, relevant manual, and AI recommendation.</div>
+  <div class="result">
+    <strong>Generated:</strong> Hierarchical navigation Plant → Building → Zone with cascading selectboxes. Zone details with metrics (type, max throughput, hazard level). Equipment grid (4 columns) with st.badge for status and criticality. Full detail panel with last maintenance, sensors dataframe, open alerts with severity badges, expandable technical manuals, and @st.fragment AI troubleshooting recommendation button.
+  </div>
+</div>
+
+<div class="prompt-block">
+  <span class="step-num">7</span>
+  <span class="prompt-title">Implement Alerts and Smart Actions</span>
+  <div class="prompt-text">/best-practices Implement the Alerts page as a Kanban board with columns At Risk, Pending Action, Rejected, Resolved Today. When opening a detail, show sensor time series, explain probable cause, retrieve evidence from manuals or historical tickets using Cortex Search, and generate a recommended action using Cortex AI.</div>
+  <div class="result">
+    <strong>Generated:</strong> Kanban board (At Risk, Pending Action, Auto-rejected, Resolved 24h) with severity badges. Investigation panel with sensor time series line chart, AI probable cause analysis via CORTEX.COMPLETE, Cortex Search SEARCH_PREVIEW evidence retrieval from manuals and tickets, and AI recommended action with FN_ALERT_DISPOSITION (APPROVE/REJECT/ESCALATE with confidence and priority).
+  </div>
+</div>
+
+<div class="prompt-block">
+  <span class="step-num">8</span>
+  <span class="prompt-title">Implement Ticket Assistant</span>
+  <div class="prompt-text">/best-practices Implement the Ticket Assistant page with a ticket list on the left, a central panel with details, tabs for Ticket Details, AI Suggested Solution, and Resolution Guides. Semantic search over technical manuals. Sections for successful historical solutions and machine work summary. For each ticket, the AI should generate a summary, probable cause, diagnostic steps, recommended solution, and confidence level.</div>
+  <div class="result">
+    <strong>Generated:</strong> Page with lateral ticket list filterable by status and priority. 3 tabs: Ticket Details (with machine work summary from MAINTENANCE_HISTORY), AI Suggested Solution (FN_SUMMARIZE_TICKET summary + FN_TROUBLESHOOTING_RECOMMENDATION with cause, diagnostics, solution, confidence), and Resolution Guides (Cortex Search SEARCH_PREVIEW over manuals with expandable results).
+  </div>
+</div>
+
+<div class="prompt-block">
+  <span class="step-num">9</span>
+  <span class="prompt-title">Implement Production Planner</span>
+  <div class="prompt-text">/best-practices Implement the Production Planner page with a list of active orders, filters by status and priority, a table showing order code, date, product, quantity, status (Completed/In Production/Planned/Rescheduled), priority, and rescheduling reason. Add a bar chart with the most frequent rescheduling reasons. Include an "AI Rescheduling" tab that generates alternative production plans using Cortex AI when an unplanned stoppage occurs, reassigning orders to alternative lines.</div>
+  <div class="result">
+    <strong>Generated:</strong> Full page with order KPIs (total, rescheduled, urgent, avg yield). Filterable order table with status/reschedule filters and yield progress bars. Bar chart of rescheduling reasons (breakdowns, raw material shortages, urgent order prioritization). AI Rescheduling tab: simulate unplanned stoppage on selected line, view affected orders, generate AI plan with FN_PRODUCTION_RESCHEDULE_PROPOSAL that includes order reassignments, impact assessment, customer communications, and recovery timeline.
+  </div>
+</div>
+
+<div class="prompt-block">
+  <span class="step-num">10</span>
+  <span class="prompt-title">Implement Predictive Maintenance</span>
+  <div class="prompt-text">/best-practices Implement Predictive Maintenance with equipment ranking by risk, probable failure score at 7/14/30 days, sensor time series, anomaly indicators, available spare parts, and recommended work orders. Create a scoring logic: high vibration + high temperature + irregular pressure = higher risk. Increase risk if maintenance overdue, decrease if recent. Button to generate AI recommendation.</div>
+  <div class="result">
+    <strong>Generated:</strong> SQL CTE with composite risk scoring: vibration_anomalies×3 + temp_anomalies×2.5 + pressure_anomalies×2 + failures×10 + critical_alerts×5 + maintenance_overdue_penalty − recent_maintenance_bonus, clamped 0-100. Risk ranking table with ProgressColumn, 7D/14D/30D failure probability bands. Equipment deep dive with score breakdown metrics, 14-day sensor time series by type, spare parts inventory, open work orders. @st.fragment AI recommendation button calling Cortex Complete with full equipment context.
+  </div>
+</div>
+
+<div class="prompt-block">
+  <span class="step-num">11</span>
+  <span class="prompt-title">Implement Fleet Maintenance Copilot</span>
+  <div class="prompt-text">/best-practices Implement the Fleet Maintenance Copilot. It should simulate receiving operator complaints like "the seats in my HaulMaster 2023 get so hot I have to stop and rest." The AI should extract model and year, search for the relevant manual, look up historical maintenance records, propose a repair, and generate a response for the operator.</div>
+  <div class="result">
+    <strong>Generated:</strong> Chat interface with sample complaint pills. AI pipeline: (1) CORTEX.COMPLETE extracts JSON (make, year, type, symptom, urgency), (2) fleet DB vehicle matching, (3) Cortex Search SEARCH_PREVIEW for manuals, (4) CORTEX.COMPLETE generates diagnosis + repair proposal + safety assessment + operator-friendly response. Formatted output with ai_reasoning_panel.
+  </div>
+</div>
+
+<div class="prompt-block">
+  <span class="step-num">12</span>
+  <span class="prompt-title">Implement Ask AI</span>
+  <div class="prompt-text">/best-practices Implement Ask AI for queries like "which equipment has the highest risk this week" or "which line is limiting performance." Use structured data from Snowflake and Cortex Search. Return a short answer, evidence consulted, SQL used, and recommended action.</div>
+  <div class="result">
+    <strong>Generated:</strong> Natural language chat with 8 suggestion pills. SQL-from-allowlist pattern: LLM classifies intent into 8 categories (risk, alert, performance, ticket, order, maintenance, inventory, general), each mapped to a pre-built SQL query (no SQL injection). Shows data table, AI answer with key findings + recommended actions, evidence panel with SQL used and Cortex Search documents consulted.
+  </div>
+</div>
+
+<div class="prompt-block">
+  <span class="step-num">13</span>
+  <span class="prompt-title">Full visual enhancement</span>
+  <div class="prompt-text">/best-practices Improve the visual design of the application. Use embedded CSS for cards, badges, and panels. Modern industrial theme. Color-coded metrics by status. AI Reasoning Summary panel. JSON responses should be formatted as readable text.</div>
+  <div class="result">
+    <strong>Generated:</strong> format_ai_response() and ai_reasoning_panel() utility functions that parse JSON and generate formatted HTML cards with blue labels, color-coded severity badges, lists as bullet points, and numbers in bold. Snowflake theme with high-contrast CSS (values #0B1F33, labels #1E3A50, white card backgrounds with blue borders). Applied iteratively with theme switches and screenshot-driven contrast fixes.
+  </div>
+</div>
+
+<div class="prompt-block">
+  <span class="step-num">14</span>
+  <span class="prompt-title">Generate project documentation</span>
+  <div class="prompt-text">/best-practices Generate an HTML file with a summary of everything built in Snowflake: the tables, views, AI functions, search services, and the Streamlit application. Explain the business use case, the benefit of each page, the prompts used step by step, an architecture diagram, and the conclusions about the value of Cortex Code for business analysts.</div>
+  <div class="result">
+    <strong>Generated:</strong> Self-contained HTML file with Snowflake branding, 5 sections (business context, step-by-step prompts, architecture diagram, metrics, and conclusions). Includes visual cards per application page, prompt blocks with their results, color-coded object diagram by type, and traditional vs. Cortex Code development time comparison.
+  </div>
+</div>
+
+</section>
+
+<!-- SECTION 4: Architecture -->
+<section id="architecture">
+<h2>4. Generated Architecture</h2>
+<p>Everything you see below was generated with the 14 prompts above. No object was created manually in Snowflake.</p>
+<div class="img-container" data-img="arquitectura_en.png" style="margin-top:20px;">
+  <img src="arquitectura_en.png" alt="Architecture diagram for Industrial AI Operations Copilot">
+  <button class="zoom-btn" title="Zoom in">&#128269;</button>
+</div>
+<p style="text-align:center;color:#888;font-size:0.82rem;margin-bottom:24px;">Click the magnifier or the image to zoom in.</p>
+
+<div class="arch-diagram">
+  <div class="arch-row">
+    <div class="arch-box app" style="flex:1;">INDUSTRIAL_AI_OPERATIONS_COPILOT_APP<br><small>Streamlit in Snowflake (SPCS)</small></div>
+  </div>
+  <div class="arch-arrow">&#8595; reads data from &#8595;</div>
+  <div class="arch-row">
+    <div class="arch-box db" style="flex:1;">INDUSTRIAL_AI_OPERATIONS_COPILOT<br><small>Database</small></div>
+  </div>
+  <div class="arch-arrow">&#8595;</div>
+  <div class="arch-row">
+    <div class="arch-box schema">RAW_DATA<br><small>16 tables + 6 UDFs</small></div>
+    <div class="arch-box schema">ANALYTICS<br><small>8 views</small></div>
+  </div>
+  <div class="arch-arrow">&#8595;</div>
+
+  <p style="margin:12px 0 6px;font-weight:600;color:var(--sf-navy);">RAW_DATA Schema — Master and operational data (16 tables)</p>
+  <div class="arch-row">
+    <div class="arch-box table">PLANTS<br><small>3 plants</small></div>
+    <div class="arch-box table">BUILDINGS<br><small>12 buildings</small></div>
+    <div class="arch-box table">PRODUCTION_ZONES<br><small>48 zones</small></div>
+    <div class="arch-box table">PRODUCTION_LINES<br><small>96 lines</small></div>
+  </div>
+  <div class="arch-row">
+    <div class="arch-box table">EQUIPMENT<br><small>446 equipment</small></div>
+    <div class="arch-box table">SENSORS<br><small>1,470 sensors</small></div>
+    <div class="arch-box table">INVENTORY<br><small>36 items</small></div>
+    <div class="arch-box table">MANUALS<br><small>10 documents</small></div>
+  </div>
+  <div class="arch-row">
+    <div class="arch-box table">SENSOR_READINGS<br><small>2.8M IoT readings</small></div>
+    <div class="arch-box table">ALERTS<br><small>966 alerts</small></div>
+    <div class="arch-box table">WORK_ORDERS<br><small>452 WOs</small></div>
+    <div class="arch-box table">TICKETS<br><small>150 tickets</small></div>
+  </div>
+  <div class="arch-row">
+    <div class="arch-box table">PRODUCTION_ORDERS<br><small>72 orders</small></div>
+    <div class="arch-box table">MAINTENANCE_HISTORY<br><small>2,230 records</small></div>
+    <div class="arch-box table">FLEET_VEHICLES<br><small>14 vehicles</small></div>
+    <div class="arch-box table">CUSTOMER_REQUESTS<br><small>48 requests</small></div>
+  </div>
+  <div class="arch-row">
+    <div class="arch-box table">DEMO_MANUAL_CHUNKS<br><small>20 KB chunks</small></div>
+    <div class="arch-box table">DEMO_TICKET_KNOWLEDGE_BASE<br><small>15 KB tickets</small></div>
+  </div>
+
+  <p style="margin:12px 0 6px;font-weight:600;color:var(--sf-orange);">AI Functions (Cortex Complete)</p>
+  <div class="arch-row">
+    <div class="arch-box udf">FN_SUMMARIZE_TICKET</div>
+    <div class="arch-box udf">FN_CLASSIFY_ALERT_SEVERITY</div>
+    <div class="arch-box udf">FN_EXTRACT_INCIDENT_ENTITIES</div>
+  </div>
+  <div class="arch-row">
+    <div class="arch-box udf">FN_TROUBLESHOOTING_RECOMMENDATION</div>
+    <div class="arch-box udf">FN_ALERT_DISPOSITION</div>
+    <div class="arch-box udf">FN_PRODUCTION_RESCHEDULE_PROPOSAL</div>
+  </div>
+
+  <p style="margin:12px 0 6px;font-weight:600;color:var(--sf-green);">Cortex Search Services</p>
+  <div class="arch-row">
+    <div class="arch-box search">INDUSTRIAL_OPS_SEARCH<br><small>35 documents (20 manuals + 15 tickets)</small></div>
+  </div>
+
+  <p style="margin:12px 0 6px;font-weight:600;color:var(--sf-purple);">Analytical Views (ANALYTICS)</p>
+  <div class="arch-row">
+    <div class="arch-box view">EQUIPMENT_HEALTH_SUMMARY</div>
+    <div class="arch-box view">PLANT_OPERATIONAL_KPI</div>
+    <div class="arch-box view">SENSOR_ANOMALY_DASHBOARD</div>
+    <div class="arch-box view">MAINTENANCE_COST_ANALYSIS</div>
+  </div>
+  <div class="arch-row">
+    <div class="arch-box view">ALERT_RESPONSE_METRICS</div>
+    <div class="arch-box view">INVENTORY_RISK_VIEW</div>
+    <div class="arch-box view">PRODUCTION_PERFORMANCE</div>
+    <div class="arch-box view">SEARCH_CONTENT</div>
+  </div>
+</div>
+
+<h3>What Each Object Type Does</h3>
+<div class="card-grid">
+  <div class="card">
+    <h4 style="color:#0d47a1;">Tables (16)</h4>
+    <p>Store operational data: plants, equipment, sensors, IoT readings, alerts, tickets, production orders, maintenance history, vehicles, and spare parts. They are the platform's "source of truth."</p>
+  </div>
+  <div class="card">
+    <h4 style="color:#6a1b9a;">Views (8)</h4>
+    <p>Predefined queries that join data from multiple tables to calculate KPIs: equipment health, plant operational KPIs, sensor anomaly dashboard, maintenance cost analysis, alert response metrics, inventory risk, production performance, and a unified search content view for Cortex Search.</p>
+  </div>
+  <div class="card">
+    <h4 style="color:#e65100;">Cortex AI UDFs (6)</h4>
+    <p>SQL functions that call a language model (mistral-large2) with structured prompts. They summarize tickets, classify alerts, extract information from free text, generate troubleshooting plans, and rescheduling proposals.</p>
+  </div>
+  <div class="card">
+    <h4 style="color:#1b5e20;">Cortex Search (1)</h4>
+    <p>Semantic search service (INDUSTRIAL_OPS_SEARCH) with snowflake-arctic-embed-m-v1.5 model over 35 documents via the SEARCH_CONTENT unified view (manuals + historical tickets). Searches by meaning, not just exact keywords. Used in Ticket Assistant, Alerts, Fleet Copilot, and Ask AI.</p>
+  </div>
+  <div class="card">
+    <h4 style="color:var(--sf-blue);">Streamlit Application (1)</h4>
+    <p>Complete web application with 8 pages, deployed in Snowpark Container Services. Reads data directly from Snowflake, calls AI UDFs, and uses Cortex Search. No external server.</p>
+  </div>
+  <div class="card">
+    <h4>Warehouse + Compute Pool</h4>
+    <p>DEMO_INDUSTRIAL_WH executes SQL queries. STREAMLIT_COPILOT_POOL is the container node where the Streamlit application runs persistently.</p>
+  </div>
+</div>
+</section>
+
+<!-- SECTION 5: Demo Metrics -->
+<section id="metrics">
+<h2>5. The Platform in Numbers</h2>
+<div class="metric-row">
+  <div class="metric"><div class="value">14</div><div class="label">Natural language prompts</div></div>
+  <div class="metric"><div class="value">16</div><div class="label">Tables</div></div>
+  <div class="metric"><div class="value">8</div><div class="label">Views</div></div>
+  <div class="metric"><div class="value">6</div><div class="label">AI functions</div></div>
+  <div class="metric"><div class="value">2.8M+</div><div class="label">Sensor readings</div></div>
+  <div class="metric"><div class="value">8</div><div class="label">Application pages</div></div>
+  <div class="metric"><div class="value">0</div><div class="label">Lines of code written by hand</div></div>
+</div>
+</section>
+
+<!-- SECTION 6: Conclusions -->
+<section id="conclusions">
+<h2>6. Conclusions</h2>
+
+<div class="conclusion-box">
+  <h3>Cortex Code in the Hands of Business Analysts</h3>
+  <p>This guide demonstrates something important: the person who built this platform didn't need to know Python, advanced SQL, or how to configure containers. They only needed to know their business well (industrial operations) and be able to describe what they wanted.</p>
+  <ul>
+    <li>Business domain knowledge is what gives quality to the prompts</li>
+    <li>A plant manager knows which KPIs are relevant, which alerts matter, which sensor data to monitor</li>
+    <li>Cortex Code translates that knowledge into data objects, AI functions, and functional applications</li>
+    <li>The result is not a prototype: it's a production-ready application deployed in Snowflake</li>
+  </ul>
+</div>
+
+<div class="conclusion-box" style="background: linear-gradient(135deg, #1b5e20, #2e7d32);">
+  <h3 style="color: #a5d6a7;">Time Reduction</h3>
+  <p>With a traditional development team, building an equivalent platform would require:</p>
+  <div class="metric-row" style="margin-top:16px;">
+    <div class="metric" style="background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);"><div class="value" style="color:#a5d6a7;">4-6 months</div><div class="label" style="color:rgba(255,255,255,0.8);">Traditional development</div></div>
+    <div class="metric" style="background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);"><div class="value" style="color:#a5d6a7;">1 session</div><div class="label" style="color:rgba(255,255,255,0.8);">With Cortex Code</div></div>
+    <div class="metric" style="background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);"><div class="value" style="color:#a5d6a7;">3-5 people</div><div class="label" style="color:rgba(255,255,255,0.8);">Team needed before</div></div>
+    <div class="metric" style="background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);"><div class="value" style="color:#a5d6a7;">1 person</div><div class="label" style="color:rgba(255,255,255,0.8);">Team needed now</div></div>
+  </div>
+</div>
+
+<h3>Value for the Company</h3>
+<div class="card-grid">
+  <div class="card">
+    <h4>AI Democratization</h4>
+    <p>Business experts can build tools with AI without depending on IT teams, reducing the typical bottleneck in digital transformation projects.</p>
+  </div>
+  <div class="card">
+    <h4>Data and Application in One Place</h4>
+    <p>Everything lives inside Snowflake: data, AI logic, semantic search, and the application. There are no external integrations to maintain, update, or secure.</p>
+  </div>
+  <div class="card">
+    <h4>Rapid Iteration</h4>
+    <p>Each improvement is implemented with a prompt. If the plant manager wants a new KPI, a new alert type, or a different report, it's added in minutes, not development cycles.</p>
+  </div>
+  <div class="card">
+    <h4>Automatic Governance</h4>
+    <p>Data never leaves Snowflake. AI functions operate with owner permissions. Access is controlled by Snowflake's standard security model.</p>
+  </div>
+</div>
+</section>
+
+</div>
+
+<footer>
+  <p>Industrial AI Operations Copilot &middot; Built with <a href="https://www.snowflake.com/">Snowflake</a> Cortex Code</p>
+  <p style="margin-top:6px; font-size:0.78rem;">Database: INDUSTRIAL_AI_OPERATIONS_COPILOT &middot; Application: INDUSTRIAL_AI_OPERATIONS_COPILOT_APP</p>
+  <p style="margin-top:10px; font-size:0.82rem; color:rgba(255,255,255,0.9);">Built by <strong>Daniel S&aacute;nchez Fern&aacute;ndez</strong> &middot; Solutions Engineer Manager &middot; <a href="mailto:d.sanchezfernandez@snowflake.com">d.sanchezfernandez@snowflake.com</a></p>
+</footer>
+
+<div class="lightbox-overlay" id="lightboxOverlay">
+  <button class="lightbox-close" id="lightboxClose" title="Close">&times;</button>
+  <img id="lightboxImg" src="" alt="Zoomed image">
+</div>
+
+<script>
+var overlay = document.getElementById('lightboxOverlay');
+var lbImg = document.getElementById('lightboxImg');
+var lbClose = document.getElementById('lightboxClose');
+function openLightbox(src) { lbImg.src = src; overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
+function closeLightbox() { overlay.classList.remove('active'); document.body.style.overflow = ''; }
+lbClose.addEventListener('click', closeLightbox);
+overlay.addEventListener('click', function(e) { if (e.target === overlay) closeLightbox(); });
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeLightbox(); });
+document.querySelectorAll('.img-container').forEach(function(c) {
+  var src = c.getAttribute('data-img');
+  c.querySelector('.zoom-btn').addEventListener('click', function() { openLightbox(src); });
+  c.querySelector('img').addEventListener('click', function() { openLightbox(src); });
+});
+
+document.querySelectorAll('.prompt-text').forEach(function(el) {
+  var btn = document.createElement('button');
+  btn.className = 'copy-btn';
+  btn.textContent = 'Copy';
+  btn.addEventListener('click', function() {
+    var text = el.textContent.replace(btn.textContent, '').trim();
+    navigator.clipboard.writeText(text).then(function() {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(function() { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    });
+  });
+  el.appendChild(btn);
+});
+</script>
+</body>
+</html>

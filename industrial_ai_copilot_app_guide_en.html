@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Industrial AI Operations Copilot — Application Guide</title>
+<style>
+:root {
+  --sf-blue: #29B5E8;
+  --sf-dark: #11567F;
+  --sf-darker: #0C3E59;
+  --sf-light: #E8F7FC;
+  --sf-accent: #FF6F20;
+  --sf-green: #2ECC71;
+  --sf-red: #E74C3C;
+  --sf-yellow: #F39C12;
+  --sf-gray: #6B7280;
+  --sf-bg: #F8FAFC;
+  --radius: 12px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--sf-bg);
+  color: #1a1a2e;
+  line-height: 1.6;
+}
+.hero {
+  background: linear-gradient(135deg, var(--sf-darker) 0%, var(--sf-dark) 50%, var(--sf-blue) 100%);
+  color: white;
+  padding: 60px 40px;
+  text-align: center;
+}
+.hero h1 { font-size: 2.4em; font-weight: 700; margin-bottom: 10px; }
+.hero p { font-size: 1.2em; opacity: 0.9; max-width: 700px; margin: 0 auto; }
+.hero .back-link {
+  display: inline-block;
+  margin-top: 18px;
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+  font-size: 0.95em;
+  padding: 6px 16px;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 20px;
+  transition: all 0.2s;
+}
+.hero .back-link:hover { background: rgba(255,255,255,0.15); color: white; }
+.nav-bar {
+  background: white;
+  border-bottom: 2px solid var(--sf-light);
+  padding: 12px 40px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.nav-bar a {
+  color: var(--sf-dark);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85em;
+  font-weight: 500;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.nav-bar a:hover { background: var(--sf-light); color: var(--sf-blue); }
+.container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+.section {
+  margin-bottom: 60px;
+  scroll-margin-top: 70px;
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.section-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5em;
+  flex-shrink: 0;
+}
+.section-header h2 {
+  font-size: 1.8em;
+  color: var(--sf-darker);
+}
+.section-desc {
+  font-size: 1.05em;
+  color: var(--sf-gray);
+  margin-bottom: 24px;
+  max-width: 800px;
+}
+.screenshot-card {
+  background: white;
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 28px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  border: 1px solid #e5e7eb;
+  position: relative;
+}
+.screenshot-card img {
+  width: 100%;
+  display: block;
+  border-bottom: 1px solid #e5e7eb;
+}
+.screenshot-card .caption {
+  padding: 16px 20px;
+}
+.screenshot-card .caption h4 {
+  color: var(--sf-dark);
+  font-size: 1.05em;
+  margin-bottom: 6px;
+}
+.screenshot-card .caption p {
+  color: var(--sf-gray);
+  font-size: 0.92em;
+}
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+  margin-bottom: 24px;
+}
+.feature-item {
+  background: white;
+  border-radius: 10px;
+  padding: 16px 18px;
+  border-left: 4px solid var(--sf-blue);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.feature-item strong { color: var(--sf-dark); display: block; margin-bottom: 4px; }
+.feature-item span { color: var(--sf-gray); font-size: 0.9em; }
+.tech-badge {
+  display: inline-block;
+  background: var(--sf-light);
+  color: var(--sf-dark);
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.78em;
+  font-weight: 600;
+  margin: 2px;
+}
+.sidebar-map {
+  background: white;
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 32px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.sidebar-map h3 { color: var(--sf-dark); margin-bottom: 16px; font-size: 1.1em; }
+.sidebar-map ul { list-style: none; }
+.sidebar-map ul li {
+  padding: 6px 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.95em;
+}
+.sidebar-map ul li:last-child { border-bottom: none; }
+.sidebar-map ul li .page-icon { margin-right: 8px; }
+.sidebar-map ul ul { padding-left: 24px; }
+.sidebar-map ul ul li { font-size: 0.9em; color: var(--sf-gray); border-bottom: none; padding: 3px 0; }
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+@media (max-width: 768px) {
+  .two-col { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 1.6em; }
+  .hero { padding: 40px 20px; }
+  .nav-bar { padding: 10px 16px; }
+}
+.divider {
+  border: none;
+  border-top: 2px solid var(--sf-light);
+  margin: 40px 0;
+}
+footer {
+  text-align: center;
+  padding: 30px;
+  color: var(--sf-gray);
+  font-size: 0.85em;
+  border-top: 1px solid #e5e7eb;
+}
+.zoom-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  background: rgba(17, 86, 127, 0.85);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s;
+  z-index: 5;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+.zoom-btn:hover {
+  background: var(--sf-blue);
+  transform: scale(1.12);
+}
+.zoom-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: white;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(10, 20, 35, 0.92);
+  backdrop-filter: blur(6px);
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  cursor: zoom-out;
+}
+.lightbox.active {
+  display: flex;
+  animation: fadeIn 0.2s ease;
+}
+.lightbox img {
+  max-width: 95vw;
+  max-height: 92vh;
+  border-radius: 10px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+  cursor: default;
+}
+.lightbox-close {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  width: 48px;
+  height: 48px;
+  background: rgba(255,255,255,0.15);
+  border: 2px solid rgba(255,255,255,0.4);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 10000;
+}
+.lightbox-close:hover {
+  background: var(--sf-red);
+  border-color: var(--sf-red);
+  transform: scale(1.1);
+}
+.lightbox-close svg {
+  width: 22px;
+  height: 22px;
+  stroke: white;
+  stroke-width: 2.5;
+  fill: none;
+  stroke-linecap: round;
+}
+.lightbox-caption {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.6);
+  color: white;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 0.9em;
+  max-width: 80vw;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>🏭 Industrial AI Operations Copilot</h1>
+  <p>Complete visual walkthrough of the Streamlit application running on Snowflake — 8 pages powered by Cortex AI, Cortex Search, and real-time operational data</p>
+  <a href="industrial_ai_operations_copilot_guide.html" class="back-link">← Back to Prompt Guide</a>
+</div>
+
+<nav class="nav-bar">
+  <a href="#overview">Overview</a>
+  <a href="#operations-center">Operations Center</a>
+  <a href="#production-plant">Production Plant</a>
+  <a href="#alerts">Alerts & Smart Actions</a>
+  <a href="#tickets">Ticket Assistant</a>
+  <a href="#ask-ai">Ask AI</a>
+  <a href="#production-planner">Production Planner</a>
+  <a href="#predictive-maintenance">Predictive Maintenance</a>
+  <a href="#fleet">Fleet Maintenance</a>
+</nav>
+
+<div class="container">
+
+  <!-- OVERVIEW -->
+  <div class="section" id="overview">
+    <div class="section-header">
+      <div class="section-icon" style="background: var(--sf-light);">📋</div>
+      <h2>Application Overview</h2>
+    </div>
+    <p class="section-desc">The Industrial AI Operations Copilot is a multi-page Streamlit application deployed on Snowflake (Container Runtime) that provides AI-powered operational intelligence across 8 pages, organized in 3 navigation groups.</p>
+
+    <div class="sidebar-map">
+      <h3>🗂️ Navigation Structure</h3>
+      <ul>
+        <li><span class="page-icon">📊</span> <strong>Operations</strong>
+          <ul>
+            <li>📈 Operations Center — Plant-wide KPIs, charts, and AI executive summary</li>
+            <li>🏗️ Production Plant — Hierarchical plant explorer with equipment detail</li>
+          </ul>
+        </li>
+        <li><span class="page-icon">🤖</span> <strong>Intelligence</strong>
+          <ul>
+            <li>🚨 Alerts & Smart Actions — Kanban board with AI-powered investigation</li>
+            <li>🎫 Ticket Assistant — AI ticket analysis with knowledge base search</li>
+            <li>💬 Ask AI — Natural-language Q&A over operational data</li>
+          </ul>
+        </li>
+        <li><span class="page-icon">📅</span> <strong>Planning</strong>
+          <ul>
+            <li>📦 Production Planner — Orders, rescheduling simulation, and AI planning</li>
+            <li>🔧 Predictive Maintenance — Risk scoring with failure window predictions</li>
+            <li>🚛 Fleet Maintenance Copilot — Operator complaint intake with AI diagnostics</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-item">
+        <strong>Cortex AI (COMPLETE)</strong>
+        <span>mistral-large2 for summaries, diagnoses, recommendations, and multi-step reasoning</span>
+      </div>
+      <div class="feature-item">
+        <strong>Cortex Search</strong>
+        <span>snowflake-arctic-embed-m-v1.5 semantic search across 35 technical manuals and tickets</span>
+      </div>
+      <div class="feature-item">
+        <strong>Real-Time Data</strong>
+        <span>2.8M+ sensor readings, 446 equipment, 1,470 sensors, 966 alerts, 452 work orders</span>
+      </div>
+      <div class="feature-item">
+        <strong>6 Cortex UDFs</strong>
+        <span>Summarize, classify, extract entities, troubleshoot, disposition, reschedule</span>
+      </div>
+    </div>
+    <p style="margin-bottom:8px;">
+      <span class="tech-badge">Streamlit in Snowflake</span>
+      <span class="tech-badge">Container Runtime</span>
+      <span class="tech-badge">Cortex COMPLETE</span>
+      <span class="tech-badge">Cortex Search</span>
+      <span class="tech-badge">mistral-large2</span>
+      <span class="tech-badge">arctic-embed-m-v1.5</span>
+      <span class="tech-badge">16 Tables</span>
+      <span class="tech-badge">8 Views</span>
+      <span class="tech-badge">6 UDFs</span>
+    </p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 1. OPERATIONS CENTER -->
+  <div class="section" id="operations-center">
+    <div class="section-header">
+      <div class="section-icon" style="background: #EBF5FF;">📈</div>
+      <h2>1. Operations Center</h2>
+    </div>
+    <p class="section-desc">Plant-wide operational dashboard with 6 KPI cards, performance-by-zone chart, unplanned downtime analysis, forecast vs. actual production table, and an AI-generated executive summary powered by Cortex COMPLETE.</p>
+
+    <div class="feature-grid">
+      <div class="feature-item">
+        <strong>6 KPI Cards</strong>
+        <span>Performance (availability %), quality rate (avg yield), work in progress, safety incidents, energy consumption, open critical alerts</span>
+      </div>
+      <div class="feature-item">
+        <strong>Visual Analytics</strong>
+        <span>Availability by production zone bar chart + unplanned downtime by equipment type (last 90 days)</span>
+      </div>
+      <div class="feature-item">
+        <strong>Forecast Table</strong>
+        <span>Product, status, planned vs. actual kg, yield %, rescheduled flag, order and due dates</span>
+      </div>
+      <div class="feature-item">
+        <strong>AI Executive Summary</strong>
+        <span>One-click Cortex AI analysis: concerning trends, areas for improvement, positive trends, and recommended actions</span>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="en/Screenshot 2026-05-13 at 09.27.57.png" alt="Operations Center — KPIs and Charts">
+      <div class="caption">
+        <h4>Operations Center — KPIs, Performance by Zone & Downtime Analysis</h4>
+        <p>Plant A24 showing 75% availability (105/140 running), 78.5% average yield, 53,479 kg work in progress, 3 safety incidents (30d), 224 kWh average energy, and 29 open critical alerts with 53 work orders. Charts show availability by production zone and unplanned downtime hours by equipment type.</p>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="en/Screenshot 2026-05-13 at 09.28.26.png" alt="Operations Center — AI Executive Summary">
+      <div class="caption">
+        <h4>Operations Center — Forecast Table & AI Executive Summary</h4>
+        <p>Forecast vs. actual production table showing products with status (Shipped, Planned, Delayed, Completed), yield percentages, and dates. Below, the AI executive summary identifies concerning trends (low equipment availability at 75%, high open critical alerts), areas for improvement (production yield, safety incidents), positive trends (energy consumption), and recommended actions.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 2. PRODUCTION PLANT -->
+  <div class="section" id="production-plant">
+    <div class="section-header">
+      <div class="section-icon" style="background: #F0FDF4;">🏗️</div>
+      <h2>2. Production Plant</h2>
+    </div>
+    <p class="section-desc">Hierarchical plant explorer: navigate from plant → building → zone → individual equipment. View sensor details, relevant technical manuals (via Cortex Search), and generate AI maintenance recommendations with one click.</p>
+
+    <div class="feature-grid">
+      <div class="feature-item">
+        <strong>Plant Hierarchy</strong>
+        <span>4 buildings, 16 production zones, 140 equipment units with availability metrics and hazard levels</span>
+      </div>
+      <div class="feature-item">
+        <strong>Equipment Detail</strong>
+        <span>Full specification: type, manufacturer, criticality, MTBF, install date, operational status, sensors, and open alerts</span>
+      </div>
+      <div class="feature-item">
+        <strong>Cortex Search Manuals</strong>
+        <span>Semantic search retrieves relevant technical documentation (calibration, maintenance, safety, inspection guides)</span>
+      </div>
+      <div class="feature-item">
+        <strong>AI Maintenance Recommendation</strong>
+        <span>Risk assessment, immediate actions, and preventive maintenance schedule generated by Cortex AI</span>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="en/Screenshot 2026-05-13 at 09.28.47.png" alt="Production Plant — Hierarchy">
+      <div class="caption">
+        <h4>Production Plant — Plant Hierarchy, Buildings & Zones</h4>
+        <p>Plant A24 overview: 4 buildings (Main Production Hall, Coating & Finishing, Warehouse Alpha, Utilities Block), 16 production zones, 140 equipment. Building cards show availability, zones, equipment count, and area. Production zones display type (Assembly, Mechanical, Chemical Process) with hazard levels. Equipment map at the bottom shows individual units.</p>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="en/Screenshot 2026-05-13 at 09.29.10.png" alt="Production Plant — Equipment Detail">
+      <div class="caption">
+        <h4>Production Plant — Equipment Detail (Tank-1-003)</h4>
+        <p>Detailed view of Tank-1-003: Type Tank, Paul Mueller manufacturer, Medium criticality, 18,000h MTBF, installed 2022-08-18. Operational status Running with maintenance overdue (>90 days, last maintenance 117 days ago). 5 associated sensors (energy, flow, pressure, temperature, vibration). Relevant manuals from Cortex Search: Calibration Handbook, Predictive Maintenance Guide, Emergency Response Plan, Storage Tank Inspection Standard, LOTO Procedures.</p>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="en/Screenshot 2026-05-13 at 09.30.01.png" alt="Production Plant — AI Maintenance Recommendation">
+      <div class="caption">
+        <h4>Production Plant — AI Maintenance Recommendation</h4>
+        <p>Cortex AI-generated maintenance recommendation for Tank-1-003: current risk assessment highlighting energy sensor in calibration mode and 117 days since last maintenance (MTBF 18,000h). Recommended immediate actions: complete sensor calibration, inspect tank integrity, review sensor data. Preventive maintenance schedule with monthly inspections and quarterly maintenance tasks.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 3. ALERTS & SMART ACTIONS -->
+  <div class="section" id="alerts">
+    <div class="section-header">
+      <div class="section-icon" style="background: #FFF7ED;">🚨</div>
+      <h2>3. Alerts & Smart Actions</h2>
+    </div>
+    <p class="section-desc">Kanban-style alert board with 4 status columns. Click "Investigate" on any alert to open a full investigation panel with sensor time series, AI probable cause analysis, knowledge base evidence search (Cortex Search), and AI-generated recommended actions with disposition.</p>
+
+    <div class="feature-grid">
+      <div class="feature-item">
+        <strong>Kanban Board</strong>
+        <span>4 columns: At Risk, Pending Action, Auto-Rejected, Resolved (24h) — with severity badges and equipment info</span>
+      </div>
+      <div class="feature-item">
+        <strong>Sensor Time Series</strong>
+        <span>14-day sensor chart with anomaly detection highlighting anomalous readings</span>
+      </div>
+      <div class="feature-item">
+        <strong>AI Probable Cause</strong>
+        <span>Root cause analysis with contributing factors and risk assessment if unaddressed</span>
+      </div>
+      <div class="feature-item">
+        <strong>AI Recommended Action</strong>
+        <span>Disposition (APPROVE/REJECT), priority, immediate steps, follow-up, justification with evidence consulted</span>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="en/Screenshot 2026-05-13 at 09.30.11.png" alt="Alerts — Kanban Board">
+      <div class="caption">
+        <h4>Alerts & Smart Actions — Kanban Board</h4>
+        <p>Alert dashboard showing 20 at-risk, 20 pending action, 15 auto-rejected, 0 resolved (24h). Alert cards display severity (Critical/Warning/Info), alert type (VIBRATION_ALARM, FLOW_DEVIATION, HIGH_TEMPERATURE, PRODUCTION_RESCHEDULE, PRESSURE_ANOMALY, etc.), equipment, plant, and timestamp. Each card has an "Investigate" button.</p>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="en/Screenshot 2026-05-13 at 09.30.40.png" alt="Alerts — Investigation Panel">
+      <div class="caption">
+        <h4>Alert Investigation — Sensor Time Series & Action Buttons</h4>
+        <p>Investigation of Alert #38 (Critical PRESSURE_ANOMALY on Conveyor Belt-28-002). Alert details with equipment status (Running, Automated resolution type). Sensor time series chart for SEN-9-Flo-03 (Flow, m³/h) over 14 days showing 4 anomalous readings. Action buttons: "Analyze probable cause" and "Search manuals & tickets".</p>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="en/Screenshot 2026-05-13 at 09.31.08.png" alt="Alerts — Probable Cause Analysis">
+      <div class="caption">
+        <h4>Alert Investigation — AI Probable Cause Analysis</h4>
+        <p>Cortex AI identifies the most likely root cause: blockage or obstruction in the conveyor belt system causing pressure buildup at sensor SEN-9-Flo-03. Contributing factors: inadequate maintenance, malfunctioning sensor, insufficient lubrication, inappropriate material feed rate. Risks if unaddressed: mechanical failure, equipment damage, safety hazards.</p>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="en/Screenshot 2026-05-13 at 09.31.21.png" alt="Alerts — Knowledge Base Evidence">
+      <div class="caption">
+        <h4>Alert Investigation — Knowledge Base Evidence (Cortex Search)</h4>
+        <p>Semantic search results from Cortex Search: a related ticket about "Packaging line conveyor CV-401 mistracking — product spillage causing waste" and a technical manual "Conveyor Belt Alignment & Tensioning Manual" with belt tracking procedures. This evidence supports the AI's root cause analysis.</p>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="en/Screenshot 2026-05-13 at 09.31.45.png" alt="Alerts — AI Recommended Action">
+      <div class="caption">
+        <h4>Alert Investigation — AI Recommended Action</h4>
+        <p>Complete AI disposition: APPROVE (create work order), Priority P1-Critical. Immediate actions: stop Conveyor Belt-28-002, notify maintenance team, ensure frame alignment per manual. Follow-up: schedule detailed inspection within 7 days, review maintenance schedule for all conveyor belts. Justification references the pressure anomaly, similar historical ticket, and the Conveyor Belt Alignment & Tensioning Manual. Evidence consulted listed at the bottom.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 4. TICKET ASSISTANT -->
+  <div class="section" id="tickets">
+    <div class="section-header">
+      <div class="section-icon" style="background: #FDF2F8;">🎫</div>
+      <h2>4. Ticket Assistant</h2>
+    </div>
+    <p class="section-desc">AI-powered ticket investigation with knowledge retrieval and solution generation. Three tabs: Ticket Details (work orders), AI Suggested Solution (historical matches), and Resolution Guides (semantic search over manuals and tickets via Cortex Search).</p>
+
+    <div class="feature-grid">
+      <div class="feature-item">
+        <strong>150 Tickets</strong>
+        <span>86 open, 64 resolved, 20 open critical — filterable by status, priority, and category</span>
+      </div>
+      <div class="feature-item">
+        <strong>Ticket Details</strong>
+        <span>Full ticket info with associated machine work summary showing work orders, costs, and resolution hours</span>
+      </div>
+      <div class="feature-item">
+        <strong>AI Suggested Solution</strong>
+        <span>Historical ticket matching with full root cause, operator notes, technician notes, and resolution steps</span>
+      </div>
+      <div class="feature-item">
+        <strong>Resolution Guides</strong>
+        <span>Cortex Search semantic query over technical manuals and historical tickets for reference material</span>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="en/Screenshot 2026-05-13 at 09.32.00.png" alt="Ticket Assistant — Ticket Details">
+      <div class="caption">
+        <h4>Ticket Assistant — Ticket Details & Work Orders</h4>
+        <p>Ticket list on the left (TKT-0000054, TKT-0000021, TKT-0000079) with severity badges and status. Right panel shows TKT-0000021 details: Critical, Assigned, Equipment Failure (Electrical Fault), Plant B17, 165 resolution hours. Machine work summary table with 5 work orders showing type (Predictive/Emergency), priority, status, technician, estimated/actual hours, and cost.</p>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="en/Screenshot 2026-05-13 at 09.32.08.png" alt="Ticket Assistant — AI Suggested Solution">
+      <div class="caption">
+        <h4>Ticket Assistant — AI Suggested Solution (Historical Match)</h4>
+        <p>AI suggested solution tab showing successful historical solutions. Expanded ticket TKT-HIS-0010: "Chemical dosing pump P-305 lost prime repeatedly — inconsistent chemical dosing" with complete root cause (leaking check valve, cracked hose, micro-perforated diaphragm), operator notes, technician findings, and detailed resolution steps (replaced suction check valve with PTFE-lined model, replaced hose, installed new diaphragm, added priming chamber).</p>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="en/Screenshot 2026-05-13 at 09.32.20.png" alt="Ticket Assistant — Resolution Guides">
+      <div class="caption">
+        <h4>Ticket Assistant — Resolution Guides (Cortex Search)</h4>
+        <p>Resolution guides tab with semantic search over technical manuals and knowledge base. Search query "Equipment Failure Electrical Fault" returns 1 technical manual (Pump Bearing Failure Analysis Guide — Root Cause Analysis for Bearing Failures) and 5 related historical tickets including power fluctuation issues, cooling tower degradation, pump seizure, spare bearing inventory depletion, and more.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 5. ASK AI -->
+  <div class="section" id="ask-ai">
+    <div class="section-header">
+      <div class="section-icon" style="background: #EDE9FE;">💬</div>
+      <h2>5. Ask AI</h2>
+    </div>
+    <p class="section-desc">Natural-language Q&A interface powered by Cortex AI and Cortex Search. Ask questions about equipment risk, production performance, alerts, inventory, or maintenance — the system classifies intent, generates SQL, queries structured data, searches the knowledge base, and synthesizes a comprehensive answer.</p>
+
+    <div class="feature-grid">
+      <div class="feature-item">
+        <strong>Multi-Step Reasoning</strong>
+        <span>Intent classification → SQL generation → data retrieval → KB search → answer synthesis</span>
+      </div>
+      <div class="feature-item">
+        <strong>Structured + Unstructured</strong>
+        <span>Combines SQL query results with Cortex Search evidence for grounded answers</span>
+      </div>
+      <div class="feature-item">
+        <strong>Transparency</strong>
+        <span>Shows retrieved data table, evidence consulted (tickets/manuals), and the SQL query used</span>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="en/Screenshot 2026-05-13 at 09.33.05.png" alt="Ask AI — Data Retrieval">
+      <div class="caption">
+        <h4>Ask AI — Question Processing & Data Retrieval</h4>
+        <p>User asks: "Which production line is limiting performance?" The system classifies intent as "Production line performance", generates SQL, and retrieves a data table showing production lines with LINE_CODE, LINE_TYPE, THROUGHPUT_KG_HR, STATUS, ZONE_NAME, PLANT_CODE, EQUIP_COUNT, and DOWN_EQUIP. Multiple lines under maintenance visible (LINE-31-1, LINE-31-2, LINE-16-1, LINE-47-1).</p>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="en/Screenshot 2026-05-13 at 09.33.48.png" alt="Ask AI — AI Answer">
+      <div class="caption">
+        <h4>Ask AI — Complete AI Reasoning Summary</h4>
+        <p>AI answer identifies LINE-31-1 in the Packaging zone of Plant B17 as the performance bottleneck due to its low throughput of 53 KG/HR and maintenance status. Key findings: lowest throughput, currently in maintenance, ticket indicating issues with packaging line conveyor CV-401. Recommended actions: prioritize maintenance completion, investigate conveyor mistracking, monitor cooling tower. Evidence consulted from 3 tickets. Expandable "SQL query used" section for full transparency.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 6. PRODUCTION PLANNER -->
+  <div class="section" id="production-planner">
+    <div class="section-header">
+      <div class="section-icon" style="background: #FEF3C7;">📦</div>
+      <h2>6. Production Planner</h2>
+    </div>
+    <p class="section-desc">Production order management with two tabs: Production Orders (overview table with rescheduling reasons and inventory risk) and AI Rescheduling (simulate unplanned stoppages and generate AI-powered rescheduling plans that reassign orders to alternative lines).</p>
+
+    <div class="feature-grid">
+      <div class="feature-item">
+        <strong>72 Production Orders</strong>
+        <span>24 active, 16 delayed, 76.1% average yield, 14 rescheduled — with status filters and inventory risk table</span>
+      </div>
+      <div class="feature-item">
+        <strong>Stoppage Simulation</strong>
+        <span>Select affected line, estimated downtime, and reason — system shows available alternatives and maintenance lines</span>
+      </div>
+      <div class="feature-item">
+        <strong>AI Rescheduling Plan</strong>
+        <span>Impact assessment with affected orders and per-order reassignment: alternative line, adjusted timing, completion estimates</span>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="en/Screenshot 2026-05-13 at 09.33.58.png" alt="Production Planner — Orders Overview">
+      <div class="caption">
+        <h4>Production Planner — Production Orders Overview</h4>
+        <p>Production orders tab showing 72 orders (24 active, 16 delayed, 76.1% avg yield, 14 rescheduled). Full orders table with columns: Order, Product, Code, Qty (kg), Order date, Due date, Status, Yield %, Rescheduled, Reason, Plant. Status filters (Planned, In Production, Completed, Delayed, Quality Hold, Shipped). Bottom shows rescheduling reasons chart and inventory risk table (materials below reorder point).</p>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="en/Screenshot 2026-05-13 at 09.34.33.png" alt="Production Planner — AI Rescheduling Setup">
+      <div class="caption">
+        <h4>Production Planner — AI Rescheduling (Stoppage Scenario)</h4>
+        <p>AI rescheduling tab: simulating an unplanned stoppage on LINE-17-1 (Coating, B17) with 48 hours downtime and "Quality hold" reason. Right panel shows 6 available alternative lines (active, with capacity in kg/hr) and 4 lines under maintenance. Below, 8 production orders potentially affected by the stoppage with product, quantity, status, due date, and plant.</p>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="en/Screenshot 2026-05-13 at 09.34.45.png" alt="Production Planner — Generating Plan">
+      <div class="caption">
+        <h4>Production Planner — Generating AI Rescheduling Plan</h4>
+        <p>The same stoppage scenario with "Generate AI rescheduling plan" button clicked, showing the spinner "Generating AI rescheduling plan..." and "Running snowflake.query(...)" — the system is calling Cortex AI to produce the rescheduling plan.</p>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="en/Screenshot 2026-05-13 at 09.40.29.png" alt="Production Planner — AI Rescheduling Plan Result">
+      <div class="caption">
+        <h4>Production Planner — AI Rescheduling Plan Result</h4>
+        <p>AI-generated rescheduling plan: Impact Assessment identifies 8 affected production orders on LINE-17-1 in Coating (B17). Detailed per-order Rescheduling Plan with reassignment: PO-000042 (Epoxy Coating Base, 40,770 kg) → LINE-17-2 at 190 kg/hr (~9 days), PO-000004 (Polyethylene Pellets HD) → LINE-20-2 at 135 kg/hr (~3 days), PO-000024 (PVC Resin Suspension) → LINE-22-2 at 153 kg/hr (~11 days), and more orders with alternative lines, throughput rates, and estimated completion times.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 7. PREDICTIVE MAINTENANCE -->
+  <div class="section" id="predictive-maintenance">
+    <div class="section-header">
+      <div class="section-icon" style="background: #FEE2E2;">🔧</div>
+      <h2>7. Predictive Maintenance</h2>
+    </div>
+    <p class="section-desc">Risk-ranked equipment dashboard with composite failure scoring. Select any equipment for detailed risk breakdown, sensor averages, time series charts, anomaly indicators, spare parts availability, open work orders, and AI predictive maintenance recommendations.</p>
+
+    <div class="feature-grid">
+      <div class="feature-item">
+        <strong>Composite Risk Score</strong>
+        <span>0–100 score based on sensor anomalies, failure events, maintenance overdue penalty, and temporal projections</span>
+      </div>
+      <div class="feature-item">
+        <strong>Failure Window Prediction</strong>
+        <span>Probability of failure within 7 days, 14 days, and 30 days for each equipment</span>
+      </div>
+      <div class="feature-item">
+        <strong>Sensor Monitoring</strong>
+        <span>30-day sensor time series (vibration, pressure, temperature, energy) with anomaly counts and degradation metrics</span>
+      </div>
+      <div class="feature-item">
+        <strong>AI Recommendation</strong>
+        <span>Complete assessment: failure mode hypothesis, work order recommendation, immediate actions, spare parts, safety considerations</span>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="en/Screenshot 2026-05-13 at 09.40.49.png" alt="Predictive Maintenance — Risk Ranking">
+      <div class="caption">
+        <h4>Predictive Maintenance — Equipment Risk Ranking & Detail</h4>
+        <p>Plant A24: 50 high risk (≥60), 0 medium risk, 0 low risk, 255 failure events (14d). Equipment risk ranking table showing top-risk equipment (Compressor-11-001, Compressor-6-001, Tank-15-004, etc.) with risk scores of 100, days since maintenance, anomalies, failures, and open alerts. Selected equipment Pump-12-007 detail: Risk 100/100, High criticality, failure window prediction of 55% (7d), 75% (14d), 90% (30d).</p>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="en/Screenshot 2026-05-13 at 09.41.06.png" alt="Predictive Maintenance — Sensor Detail">
+      <div class="caption">
+        <h4>Predictive Maintenance — Score Breakdown, Sensors & Spare Parts</h4>
+        <p>Score breakdown showing component weights: vibration anomalies (7), temperature (0), pressure (8), failure events (6), maintenance overdue penalty (+15). Sensor averages: Vibration 6.17 mm/s, Temperature 0.0°C, Pressure 40.9 bar, Energy 240.2 kWh. Anomaly indicators: high vibration, irregular pressure, failure events detected, maintenance overdue. 30-day vibration time series with spikes. Available spare parts table (Mechanical Seals below reorder point). "Generate AI recommendation" button.</p>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="en/Screenshot 2026-05-13 at 09.54.27.png" alt="Predictive Maintenance — AI Recommendation">
+      <div class="caption">
+        <h4>Predictive Maintenance — AI Predictive Maintenance Recommendation</h4>
+        <p>Comprehensive AI recommendation for Pump-12-007: (1) Risk Assessment — current condition (running, risk 100/100, 55%/75%/90% failure probability), failure mode hypothesis (high vibration → bearings/impeller, pressure anomalies → wear/blockages, multiple failure events). (2) Recommended Work Order: Predictive Maintenance, Priority High, 8-12 hours. (3) Immediate Actions (24-48h): inspect pump, check vibration levels, inspect bearings and impeller, review pressure gauges, review maintenance history. (4) Spare Parts needed: bearings, impeller, seals, gaskets.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 8. FLEET MAINTENANCE COPILOT -->
+  <div class="section" id="fleet">
+    <div class="section-header">
+      <div class="section-icon" style="background: #ECFDF5;">🚛</div>
+      <h2>8. Fleet Maintenance Copilot</h2>
+    </div>
+    <p class="section-desc">Operator complaint intake with AI-powered diagnostics. Describe a vehicle problem in natural language — the system extracts key information, matches fleet vehicles, retrieves relevant documentation via Cortex Search, and generates a complete diagnosis with repair proposal, safety assessment, work order recommendation, and operator response.</p>
+
+    <div class="feature-grid">
+      <div class="feature-item">
+        <strong>14 Fleet Vehicles</strong>
+        <span>7 in service, 0 service overdue — complaint copilot + fleet overview tabs</span>
+      </div>
+      <div class="feature-item">
+        <strong>Entity Extraction</strong>
+        <span>AI extracts make, year, type, symptom, and urgency from free-text description</span>
+      </div>
+      <div class="feature-item">
+        <strong>AI Diagnostics</strong>
+        <span>Diagnosis, repair proposal (steps, parts, labor time), safety assessment, work order, operator response</span>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="en/Screenshot 2026-05-13 at 09.58.26.png" alt="Fleet Maintenance — Complaint Intake">
+      <div class="caption">
+        <h4>Fleet Maintenance Copilot — Complaint Intake & Analysis</h4>
+        <p>Operator describes: "My Toyota 2022 forklift is leaking hydraulic fluid from the lift cylinder. It leaves puddles on the warehouse floor and the lift is getting sluggish." Extracted information: Make Toyota, Year 2022, Type forklift, Symptom: leaking hydraulic fluid, Urgency: high. Matching fleet vehicles found (VH-A24-001, VH-C09-001). Relevant documentation retrieved via Cortex Search: Centrifugal Pump Operation & Maintenance Guide, spare bearing inventory ticket, reactor pressure relief valve ticket.</p>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="en/Screenshot 2026-05-13 at 09.58.42.png" alt="Fleet Maintenance — AI Diagnosis & Repair">
+      <div class="caption">
+        <h4>Fleet Maintenance Copilot — AI Diagnosis, Repair & Response</h4>
+        <p>Complete AI-generated response: <strong>Diagnosis</strong> — worn or damaged seal in lift cylinder. <strong>Repair Proposal</strong> — 6 steps: isolate forklift (LOTO), drain hydraulic fluid, disassemble cylinder, inspect seals, reassemble, test. Parts needed: hydraulic cylinder seal kit, hydraulic fluid. Estimated labor: 4-6 hours. <strong>Safety Assessment</strong> — not safe to operate until repair completed. <strong>Recommended Work Order</strong> — Priority P1 (High), Type Corrective, Scheduling Immediate. <strong>Response to Operator</strong> — friendly non-technical paragraph explaining the issue and next steps.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Industrial AI Operations Copilot — Application Guide &nbsp;|&nbsp; Built with Snowflake, Cortex AI & Streamlit</p>
+  <p style="margin-top:6px;">
+    <a href="industrial_ai_operations_copilot_guide.html" style="color: var(--sf-blue); text-decoration: none;">Prompt Guide</a>
+    &nbsp;·&nbsp;
+    <a href="manual_en.html" style="color: var(--sf-blue); text-decoration: none;">Build Manual</a>
+  </p>
+</footer>
+
+<!-- Lightbox overlay -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose">
+    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <img id="lightboxImg" src="" alt="Zoomed screenshot">
+  <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
+
+<script>
+(function() {
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+  const lightboxCaption = document.getElementById('lightboxCaption');
+  const lightboxClose = document.getElementById('lightboxClose');
+
+  document.querySelectorAll('.screenshot-card').forEach(function(card) {
+    const img = card.querySelector('img');
+    const h4 = card.querySelector('.caption h4');
+    if (!img) return;
+
+    var btn = document.createElement('button');
+    btn.className = 'zoom-btn';
+    btn.title = 'Zoom image';
+    btn.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>';
+    card.appendChild(btn);
+
+    function openLB() {
+      lightboxImg.src = img.src;
+      lightboxCaption.textContent = h4 ? h4.textContent : '';
+      lightbox.classList.add('active');
+    }
+    btn.addEventListener('click', openLB);
+    img.style.cursor = 'zoom-in';
+    img.addEventListener('click', openLB);
+  });
+
+  function closeLB() { lightbox.classList.remove('active'); }
+  lightboxClose.addEventListener('click', closeLB);
+  lightbox.addEventListener('click', function(e) {
+    if (e.target === lightbox) closeLB();
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeLB();
+  });
+})();
+</script>
+
+</body>
+</html>
